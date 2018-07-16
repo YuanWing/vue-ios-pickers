@@ -1,18 +1,16 @@
-## picer组件使用说明
----
-- 组件目录: `\components\common\picker.vue`
-- 属性说明:  
-  属性 | 描述 | 类型 | 默认值 
-  - | :- | :-: | :-
-  show | 是否显示 | Boolean | `false` 
-  cols | 展示数据的列数, 可取值 `1`, `2`, `3` | Number | `1` 
-  pickerData | 需要展示的数据 | Array | `[]`
-  date | 设置日期类型, 可取值 `date`, `time`, `datetime`, (`pickerData` 将失效) | String | `无`
-  minDate | 开始时间 | Number | `1949`
-  maxDate | 结束时间 | Number | `当前年份往后 + 50`
-  defaultValue | 初始值 | Array | String | `无`
-  cancelFn | 取消的回调函数 | Function | `无`
-  confirmFn | 确认的回调函数 | Function | `当前选中的数据(Array)`
+## vue-ios-pickers 组件使用说明
+### 属性说明:  
+| 属性 | 描述 | 类型 | 默认值 |
+  | --- | --- | --- | --- |
+  | show | 是否显示 | Boolean | `false` |
+  | cols | 展示数据的列数, 可取值 `1`, `2`, `3` | Number | `1` |
+  | pickerData | 需要展示的数据 | Array | `[]` |
+  | date | 设置日期类型, 可取值 `date`, `time`, `datetime`, (`pickerData` 将失效) | String | `无` |
+  | minDate | 开始时间 | Number | `1949` |
+  | maxDate | 结束时间 | Number | `当前年份往后 + 50` |
+  | defaultValue | 初始值 | Array | String | `无` |
+  | cancelFn | 取消的回调函数 | Function | `无` |
+  | confirmFn | 确认的回调函数 | Function | `当前选中的数据(Array)` |  
 - `pickerData` 数据格式说明:  
   ```javascript
   // 格式一, 非联动, 三列数据互相独立
@@ -57,6 +55,6 @@
     { name: '西城区' },
     { name: '西长椿街' }
   ]
-  ```
-  如果 `date === 'date'` 则 `defaultValue` 取值为 `String`: `2016.02.28 | 2016-02-28`
+  ```  
+  如果 `date === 'date'` 则 `defaultValue` 取值为 `String`: `2016.02.28 | 2016-02-28`  
   如果 `date === 'time'` 则 `defaultValue` 取值为 `String`: `15:45`
