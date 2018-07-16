@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>vue-ios-pickers</title>
+  <script data-n-head="true" >!function(a,b){function c(){var b=f.getBoundingClientRect().width;b/i>540&&(b=540*i);var c=b/10;f.style.fontSize=c+"px",k.rem=a.rem=c}var d,e=a.document,f=e.documentElement,g=e.querySelector('meta[name="viewport"]'),h=e.querySelector('meta[name="flexible"]'),i=0,j=0,k=b.flexible||(b.flexible={});if(g){console.warn("将根据已有的meta标签来设置缩放比例");var l=g.getAttribute("content").match(/initial-scale=([d.]+)/);l&&(j=parseFloat(l[1]),i=parseInt(1/j))}else if(h){var m=h.getAttribute("content");if(m){var n=m.match(/initial-dpr=([d.]+)/),o=m.match(/maximum-dpr=([d.]+)/);n&&(i=parseFloat(n[1]),j=parseFloat((1/i).toFixed(2))),o&&(i=parseFloat(o[1]),j=parseFloat((1/i).toFixed(2)))}}if(!i&&!j){var p=(a.navigator.appVersion.match(/android/gi),a.navigator.appVersion.match(/iphone/gi)),q=a.devicePixelRatio;i=p?q>=3&&(!i||i>=3)?3:q>=2&&(!i||i>=2)?2:1:1,j=1/i}if(f.setAttribute("data-dpr",i),!g)if(g=e.createElement("meta"),g.setAttribute("name","viewport"),g.setAttribute("content","width=device-width, initial-scale="+j+", maximum-scale="+j+", minimum-scale="+j+", user-scalable=no"),f.firstElementChild)f.firstElementChild.appendChild(g);else{var r=e.createElement("div");r.appendChild(g),e.write(r.innerHTML)}a.addEventListener("resize",function(){clearTimeout(d),d=setTimeout(c,300)},!1),a.addEventListener("pageshow",function(a){a.persisted&&(clearTimeout(d),d=setTimeout(c,300))},!1),"complete"===e.readyState?e.body.style.fontSize=14*i+"px":e.addEventListener("DOMContentLoaded",function(){e.body.style.fontSize=14*i+"px"},!1),c(),k.dpr=a.dpr=i,k.refreshRem=c,k.rem2px=function(a){var b=parseFloat(a)*this.rem;return"string"==typeof a&&a.match(/rem$/)&&(b+="px"),b},k.px2rem=function(a){var b=parseFloat(a)/this.rem;return"string"==typeof a&&a.match(/px$/)&&(b+="rem"),b}}(window,window.lib||(window.lib={}));</script>
+  <style>
+    button {
+      font-size: 1em;
+    }
+    .data {
+      padding: 10px;
+      box-sizing: border-box;
+      font-size: .9em;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <button @click="show.picker = true">默认</button>
+    <button @click="show.date = true">日期(年.月.日)</button>
+    <button @click="show.month = true">日期(年.月)</button>
+    <button @click="show.year = true">日期(年)</button>
+    <button @click="show.datetime = true">日期(年.月.日 时:分)</button>
+    <button @click="show.time = true">时间(时:分)</button>
+    <vue-ios-pickers
+      :show="show.picker"
+      :picker-data="pickerData"
+      :on-cancel="cancelHandler"
+      :on-confirm="confirmHandler"
+    ></vue-ios-pickers>
+    <vue-ios-pickers
+      :show="show.date"
+      date="date"
+      :on-cancel="cancelHandler"
+      :on-confirm="confirmHandler"
+    ></vue-ios-pickers>
+    <vue-ios-pickers
+      :show="show.year"
+      date="date"
+      :cols="1"
+      :on-cancel="cancelHandler"
+      :on-confirm="confirmHandler"
+    ></vue-ios-pickers>
+    <vue-ios-pickers
+      :show="show.month"
+      date="date"
+      :cols="2"
+      :on-cancel="cancelHandler"
+      :on-confirm="confirmHandler"
+    ></vue-ios-pickers>
+    <vue-ios-pickers
+      :show="show.time"
+      date="time"
+      :on-cancel="cancelHandler"
+      :on-confirm="confirmHandler"
+    ></vue-ios-pickers>
+    <vue-ios-pickers
+      :show="show.datetime"
+      date="datetime"
+      :cols="5"
+      :on-cancel="cancelHandler"
+      :on-confirm="confirmHandler"
+    ></vue-ios-pickers>
+    <pre class="data" v-text="resultData"></pre>
+  </div>
+  <script src="./node_modules/vue/dist/vue.js"></script>
+  <script src="./dist/vue-ios-pickers.js"></script>
+  <script>
+
+      // Vue.use('vue-ios-pickers');
+      new Vue({
+        el: '#app',
+        data: {
+          show: {
+            picker: false,
+            date: false,
+            year: false,
+            month: false,
+            time: false,
+            datetime: false
+          },
+          pickerData: [
+            [
+              {
+                name: '北京',
+                id: '010',
+                children: [
+                  {
+                    name: '东城区',
+                    id: '0101',
+                    children: [
+                      { name: '长安街', id: '010101' },
+                      { name: '长椿街', id: '010102' }
+                    ]
+                  },
+                  {
+                    name: '西城区',
+                    id: '0102',
+                    children: [
+                      { name: '西长安街', id: '010201' },
+                      { name: '西长椿街', id: '010202' }
+                    ]
+                  }
+                ]
+              }
+            ]
+          ],
+          resultData: ''
+        },
+        methods: {
+          cancelHandler() {
+            this.show.picker = false;
+            this.show.date = false;
+            this.show.month = false;
+            this.show.year = false;
+            this.show.time = false;
+            this.show.datetime = false;
+          },
+          confirmHandler(result) {
+            this.resultData = JSON.stringify(result, '', 2);
+            console.log(this.resultData)
+            this.cancelHandler();
+          }
+        }
+      });
+    </script>
+</body>
+</html>

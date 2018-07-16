@@ -1,0 +1,32 @@
+{
+  "name": "vue-ios-pickers",
+  "version": "1.0.0",
+  "description": "iOS风格的picker组件，基于 Vue，支持日期、时间、日期+时间",
+  "main": "index.js",
+  "repository": "https://github.com/YuanWing/vue-ios-pickers",
+  "author": "音十 <yuan_wing@163.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "webpack --mode=development",
+    "build": "webpack --mode=production"
+  },
+  "dependencies": {
+    "vue": "^2.5.16",
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.0.8"
+  },
+  "devDependencies": {
+    "autoprefixer": "^8.6.5",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "css-loader": "^1.0.0",
+    "html-webpack-plugin": "^3.2.0",
+    "less": "^3.7.1",
+    "less-loader": "^4.1.0",
+    "postcss-loader": "^2.1.6",
+    "vue-loader": "^15.2.4",
+    "vue-style-loader": "^4.1.0",
+    "vue-template-compiler": "^2.5.16"
+  }
+}
