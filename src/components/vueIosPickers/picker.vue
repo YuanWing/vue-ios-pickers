@@ -143,6 +143,7 @@
        * @param {number} index - 当前列表，滚动到的行数索引
        */
       onChange(column, index) {
+        if (index === this.pos[column].index) return;
         // 这里要注意是级连的还是单独的
         if (this.date === 'date' || this.date === 'datetime') {
           return this.setDateColumn(column, index);
@@ -203,9 +204,10 @@
         e.preventDefault();
         const target = e.target;
         const column = target.dataset.column;
+        const currentPos = this.pos[column];
         const itemHeight = this.itemHeight;
-        const scrollHeight = this.pos[column].scrollHeight;
-        let targetY = this.pos[column].moveY;
+        const scrollHeight = currentPos.scrollHeight;
+        let targetY = currentPos.moveY;
 
         if (targetY % itemHeight !== 0) {
           targetY = Math.round(targetY / itemHeight) * itemHeight;
