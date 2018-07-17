@@ -4,13 +4,15 @@
   | --- | --- | --- | --- |
   | show | 是否显示 | Boolean | `false` |
   | cols | 展示数据的列数, 可取值 `1`, `2`, `3` | Number | `1` |
+  | name | 设置 `picker` 的唯一名称, 会在 `onConfirm` 一起返回 | String | `无` |
   | pickerData | 需要展示的数据 | Array | `[]` |
   | date | 设置日期类型, 可取值 `date`, `time`, `datetime`, (`pickerData` 将失效) | String | `无` |
   | minDate | 开始时间 | Number | `1949` |
   | maxDate | 结束时间 | Number | `当前年份往后 + 50` |
   | defaultValue | 初始值 | Array | String | `无` |
-  | cancelFn | 取消的回调函数 | Function | `无` |
-  | confirmFn | 确认的回调函数 | Function | `当前选中的数据(Array)` |  
+  | onCancel | 取消的回调函数 | Function | `无` |
+  | onConfirm | 确认的回调函数 | Function | `当前选中的数据(Array)及name值` |  
+  | onItemChange | 列数据变更的回调函数 | Function | `变更前、后的数据` |  
 - `pickerData` 数据格式说明:  
   ```javascript
   // 格式一, 非联动, 三列数据互相独立
@@ -27,7 +29,7 @@
     ]
   ]
 
-  // 格式二，联动，后一列的数据依赖前一列
+  // 格式二，联动，后一列的数据依赖前一列的children
   [
     [
       {

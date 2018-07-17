@@ -18,7 +18,9 @@
 </head>
 <body>
   <div id="app">
-    <button @click="show.picker = true">默认</button>
+    <button @click="show.picker = true">默认(带name属性)</button>
+    <button @click="show.column1 = true">1列</button>
+    <button @click="show.column2 = true">2列</button>
     <button @click="show.date = true">日期(年.月.日)</button>
     <button @click="show.month = true">日期(年.月)</button>
     <button @click="show.year = true">日期(年)</button>
@@ -27,6 +29,23 @@
     <vue-ios-pickers
       :show="show.picker"
       :picker-data="pickerData"
+      :on-cancel="cancelHandler"
+      :on-confirm="confirmHandler"
+      :on-item-change="changeHandler"
+      :default-value="defaultData.picker"
+      name="picker"
+    ></vue-ios-pickers>
+    <vue-ios-pickers
+      :show="show.column1"
+      :picker-data="pickerData"
+      :cols="1"
+      :on-cancel="cancelHandler"
+      :on-confirm="confirmHandler"
+    ></vue-ios-pickers>
+    <vue-ios-pickers
+      :show="show.column2"
+      :picker-data="pickerData"
+      :cols="2"
       :on-cancel="cancelHandler"
       :on-confirm="confirmHandler"
     ></vue-ios-pickers>
@@ -75,11 +94,22 @@
         data: {
           show: {
             picker: false,
+            column1: false,
+            column2: false,
             date: false,
             year: false,
             month: false,
             time: false,
             datetime: false
+          },
+          defaultData: {
+            picker: [{
+              name: '四川'
+            }, {
+              name: '泸州市'
+            }, {
+              id: '02822'
+            }]
           },
           pickerData: [
             [
@@ -88,19 +118,37 @@
                 id: '010',
                 children: [
                   {
-                    name: '东城区',
+                    name: '北京',
                     id: '0101',
                     children: [
-                      { name: '长安街', id: '010101' },
-                      { name: '长椿街', id: '010102' }
+                      { name: '西城区', id: '010101' },
+                      { name: '东城区', id: '010102' },
+                      { name: '海淀区', id: '010103' },
                     ]
-                  },
+                  }
+                ]
+              }, {
+                name: '四川',
+                id: '028',
+                children: [
                   {
-                    name: '西城区',
-                    id: '0102',
+                    name: '成都市',
+                    id: '0281',
                     children: [
-                      { name: '西长安街', id: '010201' },
-                      { name: '西长椿街', id: '010202' }
+                      { name: '武侯区', id: '02811' },
+                      { name: '青羊区', id: '02812' },
+                      { name: '成华区', id: '02813' },
+                      { name: '锦江区', id: '02814' },
+                      { name: '金牛区', id: '02815' },
+                    ]
+                  }, {
+                    name: '泸州市',
+                    id: '0282',
+                    children: [
+                      { name: '江阳区', id: '02821' },
+                      { name: '龙马潭区', id: '02822' },
+                      { name: '纳西区', id: '02823' },
+                      { name: '泸县', id: '02824' },
                     ]
                   }
                 ]
@@ -112,6 +160,8 @@
         methods: {
           cancelHandler() {
             this.show.picker = false;
+            this.show.column1 = false;
+            this.show.column2 = false;
             this.show.date = false;
             this.show.month = false;
             this.show.year = false;
@@ -119,9 +169,14 @@
             this.show.datetime = false;
           },
           confirmHandler(result) {
+            if (result.name === 'picker') {
+              this.defaultData.picker = result.obj;
+            }
             this.resultData = JSON.stringify(result, '', 2);
-            console.log(this.resultData)
             this.cancelHandler();
+          },
+          changeHandler(data) {
+            this.resultData = JSON.stringify(data, '', 2);
           }
         }
       });
