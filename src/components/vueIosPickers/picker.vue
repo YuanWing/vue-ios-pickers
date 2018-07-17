@@ -125,6 +125,9 @@
       getScreenY(e) {
         return e.touches[0].screenY;
       },
+      getColumn(el) {
+        return +el.dataset.column;
+      },
       moveTo(el, y, time = 0.3) {
         const currentColumn = this.pos[el.dataset.column];
         let moveY = currentColumn.moveY;
@@ -144,6 +147,7 @@
        */
       onChange(column, index) {
         if (index === this.pos[column].index) return;
+        this.setPosAttr(column, 'index', index);
         // 这里要注意是级连的还是单独的
         if (this.date === 'date' || this.date === 'datetime') {
           return this.setDateColumn(column, index);
@@ -177,7 +181,7 @@
         const itemHeight = children[0].getBoundingClientRect().height;
         const len = children.length;
         const scrollHeight = itemHeight * (len - 1);
-        const column = target.dataset.column;
+        const column = this.getColumn(target);
         let moveY = this.pos[column].moveY;
         // 如果初始化是取的默认值 moveY 的单位为 em，itemHeight === 2em;
         if (typeof moveY === 'string' && moveY.indexOf('em') !== -1) {
@@ -194,7 +198,7 @@
       onMove(e) {
         e.preventDefault();
         const target = e.target;
-        const column = target.dataset.column;
+        const column = this.getColumn(target);
         const currentY = this.getScreenY(e);
         const currentColumn = this.pos[column];
         const newMoveY = currentColumn.lastY - currentColumn.startY + currentY;
@@ -203,7 +207,7 @@
       onEnd(e) {
         e.preventDefault();
         const target = e.target;
-        const column = target.dataset.column;
+        const column = this.getColumn(target);
         const currentPos = this.pos[column];
         const itemHeight = this.itemHeight;
         const scrollHeight = currentPos.scrollHeight;
@@ -219,9 +223,8 @@
           targetY = -scrollHeight;
         }
         const index = Math.abs(targetY / itemHeight);
-        this.setPosAttr(column, 'index', index);
         this.moveTo(target, targetY);
-        this.onChange(+column, index);
+        this.onChange(column, index);
       },
       // 组件初始化数据
       init() {
@@ -544,8 +547,10 @@
       left: 0;
       top: 0;
       width: 100%;
+      padding-top: 6em;
+      padding-bottom: 6em;
       margin-top: 0;
-      margin-top: 6em;
+      margin-top: 0;
       list-style: none;
       padding-left: 0;
     }
