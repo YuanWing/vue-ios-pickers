@@ -1,4 +1,6 @@
 ## vue-ios-pickers 组件使用说明
+### DEMO
+[查看demo](https://yuanwing.github.io/vue-ios-pickers/)
 ### 属性说明:  
 | 属性 | 描述 | 类型 | 默认值 |
   | --- | --- | --- | --- |

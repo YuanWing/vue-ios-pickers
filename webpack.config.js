@@ -4,7 +4,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 module.exports = (env, argv) =>{
   const mode = argv.mode === 'production';
   return {
-    entry: './src/main.js',
+    entry: './src/index.js',
     output: {
       filename: `vue-ios-pickers${mode ? '.min' : ''}.js`,
       path: path.resolve(__dirname, 'dist')
