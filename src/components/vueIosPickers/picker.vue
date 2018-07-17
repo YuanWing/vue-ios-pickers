@@ -61,7 +61,9 @@
         type: [Array, String]
       },
       onCancel: Function,
-      onConfirm: Function
+      onConfirm: Function,
+      onItemChange: Function,
+      name: String
     },
     data() {
       return {
@@ -71,12 +73,18 @@
         pos: []
       };
     },
-    created() {
-      this.init();
+    watch: {
+      show(val) {
+        if (val) {
+          this.init();
+        }
+      }
     },
     methods: {
       onCancelHandler() {
-        this.onCancel();
+        if (typeof this.onCancel === 'function') {
+          this.onCancel();
+        }
       },
       onConfirmHandler() {
         const data = this.colsData;
@@ -94,11 +102,16 @@
           str += name;
           index += 1;
         }
-
-        this.onConfirm({
-          str,
-          obj: JSON.parse(JSON.stringify(selected))
-        });
+        if (typeof this.onConfirm === 'function') {
+          this.onConfirm({
+            str,
+            obj: this.toJSON(selected),
+            name: this.name
+          });
+        }
+      },
+      toJSON(data) {
+        return JSON.parse(JSON.stringify(data));
       },
       setTransition(el, val) {
         el.style.transition = val;
@@ -146,8 +159,23 @@
        * @param {number} index - 当前列表，滚动到的行数索引
        */
       onChange(column, index) {
+        const currentColumn = this.colsData[column];
+        const oldItem = currentColumn[this.pos[column].index];
         if (index === this.pos[column].index) return;
         this.setPosAttr(column, 'index', index);
+        const newItem = currentColumn[index];
+        if (typeof this.onItemChange === 'function') {
+          this.onItemChange(this.toJSON({
+            oldItem: {
+              name: oldItem.name,
+              id: oldItem.id
+            },
+            newItem: {
+              name: currentColumn[index].name,
+              id: currentColumn[index].id
+            }
+          }));
+        }
         // 这里要注意是级连的还是单独的
         if (this.date === 'date' || this.date === 'datetime') {
           return this.setDateColumn(column, index);
@@ -155,7 +183,7 @@
           return this.setTimeColumn(column, index);
         }
         if (column >= 2 || this.pickerData.length > 1) return;
-        const { id, children } = this.colsData[column][index];
+        const { id, children } = currentColumn[index];
         if (id === -1) return;
         const noData = [{ name: '请选择', id: -1 }];
         if (this.cols === 3) this.resetColumn(2);
