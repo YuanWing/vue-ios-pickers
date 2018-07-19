@@ -1,8 +1,9 @@
 <template>
-  <transition name="fade">
-    <div class="vue-ios-pickers" v-show="show">
+  <div class="vue-ios-pickers">
+    <div @click="show = true">{{ pickerValue }}</div>
+    <transition-group name="fade" v-if="show">
       <div class="picker-mask" key="mask" />
-      <div id="picker" class="picker-wrapper" key="wrapper">
+      <div class="picker-wrapper" key="wrapper">
         <div class="btn-box">
           <a class="btn btn-cancel" @click="onCancelHandler">取消</a>
           <a class="btn btn-confirm" @click="onConfirmHandler">确定</a>
@@ -34,18 +35,14 @@
           </div>
         </div>
       </div>
-    </div>
-  </transition>
+    </transition-group>
+  </div>
 </template>
 
 <script>
   export default {
     name: 'vue-ios-pickers',
     props: {
-      show: {
-        default: false,
-        required: true
-      },
       cols: {
         type: Number,
         default: 3
@@ -57,9 +54,7 @@
       date: String,
       minDate: [Number, String],
       maxDate: [Number, String],
-      defaultValue: {
-        type: [Array, String]
-      },
+      value: [Array, String],
       onCancel: Function,
       onConfirm: Function,
       onItemChange: Function,
@@ -67,21 +62,20 @@
     },
     data() {
       return {
+        pickerValue: '请选择',
+        show: false,
         itemHeight: 0,
         // 实际页面展示的数据
         colsData: [],
         pos: []
       };
     },
-    watch: {
-      show(val) {
-        if (val) {
-          this.init();
-        }
-      }
+    mounted() {
+      this.init();
     },
     methods: {
       onCancelHandler() {
+        this.show = false;
         if (typeof this.onCancel === 'function') {
           this.onCancel();
         }
@@ -99,7 +93,15 @@
             name,
             id
           });
-          str += name;
+          if (this.date) {
+            str += name;
+          } else {
+            if (index === 0) {
+              str = name;
+            } else {
+              str += `,${name}`;
+            }
+          }
           index += 1;
         }
         if (typeof this.onConfirm === 'function') {
@@ -109,6 +111,9 @@
             name: this.name
           });
         }
+        this.$emit('input', str);
+        this.show = false;
+        this.pickerValue = str;
       },
       toJSON(data) {
         return JSON.parse(JSON.stringify(data));
@@ -171,8 +176,8 @@
               id: oldItem.id
             },
             newItem: {
-              name: currentColumn[index].name,
-              id: currentColumn[index].id
+              name: newItem.name,
+              id: newItem.id
             }
           }));
         }
@@ -284,23 +289,33 @@
           }
         }
 
-        if (this.defaultValue && this.defaultValue.length) {
-          this.setDefaultValue();
+        if (this.value) {
+          this.setDefaultValue(this.value);
         }
       },
       // 组件默认值(初始化从父组件传进来的)
-      setDefaultValue() {
-        const firstDefault = this.defaultValue[0];
+      setDefaultValue(value) {
+        let defaultValue = value;
+        if (typeof value === 'string') {
+          defaultValue = value.split(',');
+          this.pickerValue = value;
+        }
+        const firstDefault = defaultValue[0];
         /**
          * isChildren 用来判断 picker 取值是级联(取上一列的children) 还是并联(取pickerData[index])
          */
         const isChildren = this.pickerData.length === 1;
-        const defaultValueFn = (defaultValue, column) => {
-          if (!defaultValue) return;
+        const defaultValueFn = (value, column) => {
+          if (!value) return;
           this.colsData[column].map((item, index) => {
-            if (item.name === defaultValue.name || item.id === defaultValue.id) {
+            if (item.name === value || item.id === value) {
               this.pos[column].index = index;
               this.pos[column].moveY = `-${2 * index}em`;
+              if (column === 0) {
+                this.pickerValue = item.name;
+              } else {
+                this.pickerValue += `,${item.name}`;
+              }
             }
           });
         };
@@ -313,22 +328,24 @@
           if (isChildren) {
             this.colsData[1] = this.pickerData[0][this.pos[0].index].children || [];
           }
-          const secondDefault = this.defaultValue[1];
+          const secondDefault = defaultValue[1];
           defaultValueFn(secondDefault, 1);
           if (this.cols === 3) {
             if (isChildren) {
               this.colsData[2] = this.pickerData[0][this.pos[0].index].children[this.pos[1].index].children;
             }
-            const thirdDefault = this.defaultValue[2];
+            const thirdDefault = defaultValue[2];
             defaultValueFn(thirdDefault, 2);
           }
         }
       },
       // 日期初始化
       initDate() {
-        let now = new Date(this.defaultValue);
+        let now = new Date(this.value);
         if (now.toString().toLowerCase().indexOf('invalid') !== -1) {
           now = new Date();
+        } else {
+          this.pickerValue = this.value;
         }
         let nowYear = now.getFullYear();
         let nowMonths = now.getMonth();

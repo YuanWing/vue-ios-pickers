@@ -6,6 +6,9 @@
   <title>vue-ios-pickers</title>
   <script data-n-head="true" >!function(a,b){function c(){var b=f.getBoundingClientRect().width;b/i>540&&(b=540*i);var c=b/10;f.style.fontSize=c+"px",k.rem=a.rem=c}var d,e=a.document,f=e.documentElement,g=e.querySelector('meta[name="viewport"]'),h=e.querySelector('meta[name="flexible"]'),i=0,j=0,k=b.flexible||(b.flexible={});if(g){console.warn("将根据已有的meta标签来设置缩放比例");var l=g.getAttribute("content").match(/initial-scale=([d.]+)/);l&&(j=parseFloat(l[1]),i=parseInt(1/j))}else if(h){var m=h.getAttribute("content");if(m){var n=m.match(/initial-dpr=([d.]+)/),o=m.match(/maximum-dpr=([d.]+)/);n&&(i=parseFloat(n[1]),j=parseFloat((1/i).toFixed(2))),o&&(i=parseFloat(o[1]),j=parseFloat((1/i).toFixed(2)))}}if(!i&&!j){var p=(a.navigator.appVersion.match(/android/gi),a.navigator.appVersion.match(/iphone/gi)),q=a.devicePixelRatio;i=p?q>=3&&(!i||i>=3)?3:q>=2&&(!i||i>=2)?2:1:1,j=1/i}if(f.setAttribute("data-dpr",i),!g)if(g=e.createElement("meta"),g.setAttribute("name","viewport"),g.setAttribute("content","width=device-width, initial-scale="+j+", maximum-scale="+j+", minimum-scale="+j+", user-scalable=no"),f.firstElementChild)f.firstElementChild.appendChild(g);else{var r=e.createElement("div");r.appendChild(g),e.write(r.innerHTML)}a.addEventListener("resize",function(){clearTimeout(d),d=setTimeout(c,300)},!1),a.addEventListener("pageshow",function(a){a.persisted&&(clearTimeout(d),d=setTimeout(c,300))},!1),"complete"===e.readyState?e.body.style.fontSize=14*i+"px":e.addEventListener("DOMContentLoaded",function(){e.body.style.fontSize=14*i+"px"},!1),c(),k.dpr=a.dpr=i,k.refreshRem=c,k.rem2px=function(a){var b=parseFloat(a)*this.rem;return"string"==typeof a&&a.match(/rem$/)&&(b+="px"),b},k.px2rem=function(a){var b=parseFloat(a)/this.rem;return"string"==typeof a&&a.match(/px$/)&&(b+="rem"),b}}(window,window.lib||(window.lib={}));</script>
   <style>
+    body {
+      margin: 0;
+    }
     button {
       font-size: 1em;
     }
@@ -13,76 +16,91 @@
       padding: 10px;
       box-sizing: border-box;
       font-size: .9em;
+      position: fixed;
+      color: #fff;
+      right: 0;
+      top: 0;
+      background-color: rgba(0, 0, 0, .7);
+    }
+    .demo-content {
+      margin-left: 1em;
+      list-style: none;
+      padding-top: .3em;
+      padding-bottom: .3em;
     }
   </style>
 </head>
 <body>
   <div id="app">
-    <button @click="show.picker = true">默认(带name属性)</button>
-    <button @click="show.column1 = true">1列</button>
-    <button @click="show.column2 = true">2列</button>
-    <button @click="show.date = true">日期(年.月.日)</button>
-    <button @click="show.month = true">日期(年.月)</button>
-    <button @click="show.year = true">日期(年)</button>
-    <button @click="show.datetime = true">日期(年.月.日 时:分)</button>
-    <button @click="show.time = true">时间(时:分)</button>
-    <vue-ios-pickers
-      :show="show.picker"
-      :picker-data="pickerData"
-      :on-cancel="cancelHandler"
-      :on-confirm="confirmHandler"
-      :on-item-change="changeHandler"
-      :default-value="defaultData.picker"
-      name="picker"
-    ></vue-ios-pickers>
-    <vue-ios-pickers
-      :show="show.column1"
-      :picker-data="pickerData"
-      :cols="1"
-      :on-cancel="cancelHandler"
-      :on-confirm="confirmHandler"
-    ></vue-ios-pickers>
-    <vue-ios-pickers
-      :show="show.column2"
-      :picker-data="pickerData"
-      :cols="2"
-      :on-cancel="cancelHandler"
-      :on-confirm="confirmHandler"
-    ></vue-ios-pickers>
-    <vue-ios-pickers
-      :show="show.date"
-      date="date"
-      :on-cancel="cancelHandler"
-      :on-confirm="confirmHandler"
-    ></vue-ios-pickers>
-    <vue-ios-pickers
-      :show="show.year"
-      date="date"
-      :cols="1"
-      :on-cancel="cancelHandler"
-      :on-confirm="confirmHandler"
-    ></vue-ios-pickers>
-    <vue-ios-pickers
-      :show="show.month"
-      date="date"
-      :cols="2"
-      :on-cancel="cancelHandler"
-      :on-confirm="confirmHandler"
-    ></vue-ios-pickers>
-    <vue-ios-pickers
-      :show="show.time"
-      date="time"
-      :on-cancel="cancelHandler"
-      :on-confirm="confirmHandler"
-    ></vue-ios-pickers>
-    <vue-ios-pickers
-      :show="show.datetime"
-      date="datetime"
-      :cols="5"
-      :on-cancel="cancelHandler"
-      :on-confirm="confirmHandler"
-    ></vue-ios-pickers>
-    <pre class="data" v-text="resultData"></pre>
+    <ul class="demo">
+      <li class="demo-title">三级联动(带默认值)</li>
+      <li class="demo-content">
+        <vue-ios-pickers
+          :picker-data="pickerData"
+          :on-confirm="confirmHandler"
+          :on-item-change="changeHandler"
+          :value="defaultData.picker"
+          name="picker"
+        ></vue-ios-pickers>
+      </li>
+      <li class="demo-title">双列数据</li>
+      <li class="demo-content">
+        <vue-ios-pickers
+          :picker-data="pickerData"
+          :cols="2"
+          :on-confirm="confirmHandler"
+        ></vue-ios-pickers>
+      </li>
+      <li class="demo-title">单列数据</li>
+      <li class="demo-content">
+        <vue-ios-pickers
+          :picker-data="pickerData"
+          :cols="1"
+          :on-confirm="confirmHandler"
+        ></vue-ios-pickers>
+      </li>
+      <li class="demo-title">日期(年.月.日)</li>
+      <li class="demo-content">
+        <vue-ios-pickers
+          date="date"
+          :on-confirm="confirmHandler"
+        ></vue-ios-pickers>
+      </li>
+      <li class="demo-title">日期(年.月)</li>
+      <li class="demo-content">
+        <vue-ios-pickers
+          date="date"
+          :cols="2"
+          :on-confirm="confirmHandler"
+        ></vue-ios-pickers>
+      </li>
+      <li class="demo-title">日期(年)</li>
+      <li class="demo-content">
+        <vue-ios-pickers
+          date="date"
+          :cols="1"
+          :on-confirm="confirmHandler"
+        ></vue-ios-pickers>
+      </li>
+      <li class="demo-title">时间</li>
+      <li class="demo-content">
+        <vue-ios-pickers
+          date="time"
+          :on-confirm="confirmHandler"
+        ></vue-ios-pickers>
+      </li>
+      <li class="demo-title">日期+时间</li>
+      <li class="demo-content">
+        <vue-ios-pickers
+          date="datetime"
+          :cols="5"
+          :on-confirm="confirmHandler"
+        ></vue-ios-pickers>
+      </li>
+    </ul>
+    <div class="data">
+      <pre v-text="resultData"></pre>
+    </div>
   </div>
   <script src="https://lib.baomitu.com/vue/2.5.16/vue.min.js"></script>
   <script src="./dist/vue-ios-pickers.js"></script>
@@ -90,24 +108,8 @@
       new Vue({
         el: '#app',
         data: {
-          show: {
-            picker: false,
-            column1: false,
-            column2: false,
-            date: false,
-            year: false,
-            month: false,
-            time: false,
-            datetime: false
-          },
           defaultData: {
-            picker: [{
-              name: '四川'
-            }, {
-              name: '泸州市'
-            }, {
-              id: '02822'
-            }]
+            picker: [ '四川', '泸州市', '02822' ]
           },
           pickerData: [
             [
@@ -156,22 +158,8 @@
           resultData: ''
         },
         methods: {
-          cancelHandler() {
-            this.show.picker = false;
-            this.show.column1 = false;
-            this.show.column2 = false;
-            this.show.date = false;
-            this.show.month = false;
-            this.show.year = false;
-            this.show.time = false;
-            this.show.datetime = false;
-          },
           confirmHandler(result) {
-            if (result.name === 'picker') {
-              this.defaultData.picker = result.obj;
-            }
             this.resultData = JSON.stringify(result, '', 2);
-            this.cancelHandler();
           },
           changeHandler(data) {
             this.resultData = JSON.stringify(data, '', 2);
