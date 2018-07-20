@@ -188,7 +188,7 @@ eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.VueIosPickers = exports.default = undefined;\n\nvar _picker = __webpack_require__(/*! ./picker.vue */ \"./src/picker.vue\");\n\nvar _picker2 = _interopRequireDefault(_picker);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction install(Vue) {\n  Vue.component(_picker2.default.name, _picker2.default);\n}\n\nif (typeof window !== 'undefined' && window.Vue) {\n  window.Vue.use(install);\n}\n\nexports.default = install;\nexports.VueIosPickers = _picker2.default;\n\n//# sourceURL=webpack:///./src/index.js?");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _picker = __webpack_require__(/*! ./picker.vue */ \"./src/picker.vue\");\n\nvar _picker2 = _interopRequireDefault(_picker);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar VueIosPickers = {\n  install: function install(Vue) {\n    Vue.component(_picker2.default.name, _picker2.default);\n  }\n};\n\nif (typeof window !== 'undefined' && window.Vue) {\n  Vue.use(VueIosPickers);\n}\n\nexports.default = VueIosPickers;\n\n//# sourceURL=webpack:///./src/index.js?");
 
 /***/ }),
 

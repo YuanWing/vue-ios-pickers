@@ -1,6 +1,8 @@
 ## vue-ios-pickers 组件使用说明
+基于Vue，iOS风格的picker组件，支持三级联动，日期(年.月.日)，时间(时:分)，日期+时间，年，年+月
 ### DEMO
 [查看demo](https://yuanwing.github.io/vue-ios-pickers/)
+![vue-ios-pickers](./qrCode.png)
 ### 安装
 ```
 $ yarn add vue-ios-pickers
@@ -10,13 +12,23 @@ Or
 $ npm install vue-ios-pickers
 ```
 ### 使用
-```
-// 一个日期的 picker  支持 年.月.日 时:分
-<vue-ios-pickers
-  date="datetime"
-  :cols="5"
-></vue-ios-pickers>
-```
+- 引入`js`全局使用:
+  ```javascript
+  <script src="./node_modules/vue-ios-pickers/dist/vue-ios-pickers.min.js"></script>
+  ```
+- 使用 `Vue.use` 导入
+  ```javascript
+  import VueIosPickers from 'vue-ios-pickers';
+  Vue.use(VueIosPickers);
+  ```
+- 页面中使用
+  ```javascript
+  // 一个日期的 picker  支持 年.月.日 时:分
+  <vue-ios-pickers
+    date="datetime"
+    :cols="5"
+  ></vue-ios-pickers>
+  ```
 ### 属性说明:  
 | 属性 | 描述 | 类型 | 默认值 |
   | --- | --- | --- | --- |
