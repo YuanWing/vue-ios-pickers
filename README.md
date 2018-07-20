@@ -34,6 +34,7 @@ $ npm install vue-ios-pickers
   | --- | --- | --- | --- |
   | cols | 展示数据的列数, 可取值 `1`, `2`, `3`, `5` | Number | `3` |
   | name | 设置 `picker` 的唯一名称, 会在 `onConfirm` 一起返回 | String | `无` |
+  | align | 设置文本对齐方式, 可取值 `left`, `right`, `center` | String | 'right'
   | pickerData | 需要展示的数据 | Array | `[]` |
   | date | 设置日期类型, 可取值 `date`, `time`, `datetime`, (`pickerData` 将失效) | String | `无` |
   | minDate | 开始时间 | Number | `1949` |

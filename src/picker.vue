@@ -1,6 +1,6 @@
 <template>
   <div class="vue-ios-pickers">
-    <div @click="show = true">{{ pickerValue }}</div>
+    <div class="picker-value" @click="show = true" :style="{textAlign: align}">{{ pickerValue }}</div>
     <transition-group name="fade" v-if="show">
       <div class="picker-mask" key="mask" />
       <div class="picker-wrapper" key="wrapper">
@@ -58,7 +58,11 @@
       onCancel: Function,
       onConfirm: Function,
       onItemChange: Function,
-      name: String
+      name: String,
+      align: {
+        type: String,
+        default: 'right'
+      }
     },
     data() {
       return {
@@ -511,6 +515,27 @@
 
 <style lang="less" scoped>
   @borderColor: #ececec;
+  .vue-ios-pickers {
+    width: 100%;
+  }
+  .picker-value {
+    padding: 0.5em 1em 0.5em 0;
+    position: relative;
+    text-align: right;
+    &:after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      width: 0.7em;
+      height: 0.7em;
+      border-top: 1px solid #999;
+      border-right: 1px solid #999;
+      transform: rotateZ(45deg);
+    }
+  }
   .picker-mask {
     position: fixed;
     top: 0;
