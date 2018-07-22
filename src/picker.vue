@@ -597,7 +597,7 @@
     &:after {
       content: '';
       position: absolute;
-      right: 0;
+      right: .2em;
       top: 0;
       bottom: 0;
       margin: auto;
