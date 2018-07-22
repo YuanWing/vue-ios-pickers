@@ -1,44 +1,46 @@
 <template>
   <div class="vue-ios-pickers">
     <div class="picker-value" @click="show = true" :style="{textAlign: align}">{{ pickerValue }}</div>
-    <transition-group name="fade" v-if="show">
-      <div class="picker-mask" key="mask" />
-      <div class="picker-wrapper" key="wrapper">
-        <div class="btn-box">
-          <a class="btn btn-cancel" @click="onCancelHandler">取消</a>
-          <a class="btn btn-confirm" @click="onConfirmHandler">确定</a>
-        </div>
-        <div class="data-box">
-          <div class="scroll-mask" />
-          <!-- 第一列 -->
-          <div
-            class="items"
-            v-for="(column, index) in colsData"
-            :key="index"
-          >
-            <ul
-              class="scroll"
-              :data-column="index"
-              :style="dynamicStyle(index)"
-              @touchstart="onStart"
-              @mousedown="onStart"
-              @touchmove="onMove"
-              @mousemove="onMove"
-              @touchend="onEnd"
-              @mouseup="onEnd"
+    <transition name="fade" v-if="show">
+      <div>
+        <div class="picker-mask" @click="closePicker" @mouseup="closePicker" key="mask" />
+        <div class="picker-wrapper" key="wrapper">
+          <div class="btn-box">
+            <a class="btn btn-cancel" @click="onCancelHandler">取消</a>
+            <a class="btn btn-confirm" @click="onConfirmHandler">确定</a>
+          </div>
+          <div class="data-box">
+            <div class="scroll-mask" />
+            <!-- 第一列 -->
+            <div
+              class="items"
+              v-for="(column, index) in colsData"
+              :key="index"
             >
-              <li
-                class="item"
-                v-for="(item, index) in column"
-                v-text="item.name"
-                :key="index"
-              />
-            </ul>
-            <div class="border" />
+              <ul
+                class="scroll"
+                :data-column="index"
+                :style="dynamicStyle(index)"
+                @touchstart="onStart"
+                @mousedown="onStart"
+                @touchmove="onMove"
+                @mousemove="onMove"
+                @touchend="onEnd"
+                @mouseup="onEnd"
+              >
+                <li
+                  class="item"
+                  v-for="(item, index) in column"
+                  v-text="item.name"
+                  :key="index"
+                />
+              </ul>
+              <div class="border" />
+            </div>
           </div>
         </div>
       </div>
-    </transition-group>
+    </transition>
   </div>
 </template>
 
@@ -81,8 +83,12 @@
       this.init();
     },
     methods: {
-      onCancelHandler() {
+      closePicker(e) {
+        if (e) e.preventDefault();
         this.show = false;
+      },
+      onCancelHandler() {
+        this.closePicker();
         if (typeof this.onCancel === 'function') {
           this.onCancel();
         }
