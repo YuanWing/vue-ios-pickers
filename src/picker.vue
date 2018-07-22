@@ -61,7 +61,7 @@
       maxDate: [Number, String],
       value: {
         default: '',
-        type: [Array, String]
+        type: [Array, String, Number]
       },
       onCancel: Function,
       onConfirm: Function,
