@@ -327,7 +327,7 @@
             }
           }
         }
-        if (this.value) {
+        if (this.value || this.value === 0) {
           this.setDefaultValue(this.value);
         }
       },
@@ -336,7 +336,8 @@
         let defaultValue = value;
         if (typeof value === 'string') {
           defaultValue = value.split(',');
-          this.pickerValue = value;
+        } else if (typeof value === 'number') {
+          defaultValue = [value];
         }
         const firstDefault = defaultValue[0];
         /**
@@ -344,9 +345,9 @@
          */
         const isChildren = this.pickerData.length === 1;
         const defaultValueFn = (value, column) => {
-          if (!value) return;
+          if (!value && value !== 0) return;
           this.colsData[column].map((item, index) => {
-            if (item.name === value || item.id === value) {
+            if (item.name.toString() === value.toString() || item.id.toString() === value.toString()) {
               this.pos[column].index = index;
               this.pos[column].moveY = `-${2 * index}em`;
               if (column === 0) {
