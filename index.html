@@ -39,7 +39,7 @@
           :picker-data="pickerData"
           :on-confirm="confirmHandler"
           :on-item-change="changeHandler"
-          :value="defaultData.picker"
+          v-model="defaultData.picker"
           name="picker"
         ></vue-ios-pickers>
       </li>
@@ -49,6 +49,7 @@
           :picker-data="pickerData"
           :cols="2"
           :on-confirm="confirmHandler"
+          v-model="defaultData.doublePicker"
         ></vue-ios-pickers>
       </li>
       <li class="demo-title">单列数据</li>
@@ -57,6 +58,7 @@
           :picker-data="pickerData"
           :cols="1"
           :on-confirm="confirmHandler"
+          v-model="defaultData.singlePicker"
         ></vue-ios-pickers>
       </li>
       <li class="demo-title">日期(年.月.日)</li>
@@ -65,6 +67,7 @@
           date="date"
           align="left"
           :on-confirm="confirmHandler"
+          v-model="defaultData.datePicker"
         ></vue-ios-pickers>
       </li>
       <li class="demo-title">日期(年.月)</li>
@@ -73,6 +76,7 @@
           date="date"
           :cols="2"
           :on-confirm="confirmHandler"
+          v-model="defaultData.date2Picker"
         ></vue-ios-pickers>
       </li>
       <li class="demo-title">日期(年)</li>
@@ -81,6 +85,7 @@
           date="date"
           :cols="1"
           :on-confirm="confirmHandler"
+          v-model="defaultData.yearPicker"
         ></vue-ios-pickers>
       </li>
       <li class="demo-title">时间</li>
@@ -88,6 +93,7 @@
         <vue-ios-pickers
           date="time"
           :on-confirm="confirmHandler"
+          v-model="defaultData.timePicker"
         ></vue-ios-pickers>
       </li>
       <li class="demo-title">日期+时间</li>
@@ -96,6 +102,7 @@
           date="datetime"
           :cols="5"
           :on-confirm="confirmHandler"
+          v-model="defaultData.datetimePicker"
         ></vue-ios-pickers>
       </li>
     </ul>
@@ -110,7 +117,8 @@
         el: '#app',
         data: {
           defaultData: {
-            picker: [ '四川', '泸州市', '02822' ]
+            picker: [ '四川', '泸州市', '02822' ],
+            datetimePicker: '2020.07.15 06:55'
           },
           pickerData: [
             [

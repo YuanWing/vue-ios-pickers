@@ -54,12 +54,15 @@
       },
       pickerData: {
         type: Array,
-        defalut: []
+        default: []
       },
       date: String,
       minDate: [Number, String],
       maxDate: [Number, String],
-      value: [Array, String],
+      value: {
+        default: '',
+        type: [Array, String]
+      },
       onCancel: Function,
       onConfirm: Function,
       onItemChange: Function,
@@ -78,6 +81,11 @@
         colsData: [],
         pos: []
       };
+    },
+    watch: {
+      show(val) {
+        if (val) this.init();
+      }
     },
     mounted() {
       this.init();
@@ -99,32 +107,39 @@
         const pos = this.pos;
         const selected = [];
         let index = 0;
-        let str = '';
+        let names = [];
+        let ids = [];
         while (index < cols) {
           const { name, id } = data[index][pos[index].index];
           selected.push({
             name,
             id
           });
-          if (this.date) {
-            str += name;
-          } else {
-            if (index === 0) {
-              str = name;
-            } else {
-              str += `,${name}`;
-            }
-          }
+          ids.push(id);
+          names.push(name);
           index += 1;
+        }
+        let str = names.join(',');
+        let strIds = ids.join(',');
+        if (this.date === 'date') {
+          strIds = ids.join('-');
+          str = str.replace(/,/g, '');
+        } else if (this.date === 'time') {
+          strIds = ids.join(':');
+          str = str.replace(',', '');
+        } else if (this.date === 'datetime') {
+          strIds = strIds.replace(/(\d+),(\d+),(\d+),(\d+),(\d+)/g, '$1-$2-$3 $4:$5');
+          str = str.replace(/(.+),(.+),(.+),(.+),(.+)/g, '$1$2$3 $4$5');
         }
         if (typeof this.onConfirm === 'function') {
           this.onConfirm({
             str,
+            strIds,
             obj: this.toJSON(selected),
             name: this.name
           });
         }
-        this.$emit('input', str);
+        this.$emit('input', strIds);
         this.show = false;
         this.pickerValue = str;
       },
@@ -312,7 +327,6 @@
             }
           }
         }
-
         if (this.value) {
           this.setDefaultValue(this.value);
         }
@@ -365,11 +379,42 @@
       },
       // 日期初始化
       initDate() {
-        let now = new Date(this.value);
+        let now = new Date();
+        if (this.value && this.date.indexOf('date') !== -1) {
+          now = new Date(this.value);
+        }
         if (now.toString().toLowerCase().indexOf('invalid') !== -1) {
           now = new Date();
-        } else {
-          this.pickerValue = this.value;
+        } else if (this.value) {
+          const strIds = this.value;
+          let name = strIds.replace(/\./g, '-');
+          if (this.date === 'date') {
+            name = name.replace(/(\d+)\-?(\d*)\-?(\d*)/g, (match, p1, p2, p3) => {
+              let str = '';
+              if (p1) {
+                str += `${p1}年`;
+              }
+              if (p2) {
+                str += `${p2}月`;
+              }
+              if (p3) {
+                str += `${p3}日`
+              }
+              return str;
+            });
+          } else if (this.date === 'time') {
+            const arr = strIds.split(':');
+            name = arr[0].length === 1 ? `0${arr[0]}时` : `${arr[0]}时`;
+            name += arr[1].length === 1 ? `0${arr[1]}分` : `${arr[1]}分`;
+          } else if (this.date === 'datetime') {
+            name = name.replace(/(\d+)\-(\d+)\-(\d+) (\d+):(\d+)/g, (match, p1, p2, p3, p4, p5) => {
+              let str = `${p1}年${p2}月${p3}日 `;
+              str += (p4.length === 1 ? `0${p4}时` : `${p4}时`);
+              str += (p5.length === 1 ? `0${p5}分` : `${p5}分`);
+              return str;
+            });
+          }
+          this.pickerValue = name;
         }
         let nowYear = now.getFullYear();
         let nowMonths = now.getMonth();
@@ -377,8 +422,14 @@
         let nowHours = now.getHours();
         let nowMinutes = now.getMinutes();
         if (this.date === 'time') {
-          this.setHours(nowHours);
-          this.setMinutes(nowMinutes);
+          if (this.value) {
+            const times = this.value.split(':');
+            this.setHours(times[0]);
+            this.setMinutes(times[1]);
+          } else {
+            this.setHours(nowHours);
+            this.setMinutes(nowMinutes);
+          }
         } else {
           this.setYear(nowYear);
           if (this.cols > 1) {

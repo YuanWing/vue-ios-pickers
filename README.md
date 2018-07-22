@@ -32,14 +32,15 @@ $ npm install vue-ios-pickers
 ### 属性说明:  
 | 属性 | 描述 | 类型 | 默认值 |
   | --- | --- | --- | --- |
+  | v-model | 组件通信, 初始值(**必填**) | String | Array | `-` |
   | cols | 展示数据的列数, 可取值 `1`, `2`, `3`, `5` | Number | `3` |
-  | name | 设置 `picker` 的唯一名称, 会在 `onConfirm` 一起返回 | String | `无` |
+  | name | 设置 `picker` 的唯一名称, 会在 `onConfirm` 一起返回 | String | `-` |
   | align | 设置文本对齐方式, 可取值 `css -> text-align` | String | `right`
   | pickerData | 需要展示的数据 | Array | `[]` |
-  | date | 设置日期类型, 可取值 `date`, `time`, `datetime`, (`pickerData` 将失效) | String | `无` |
+  | date | 设置日期类型, 可取值 `date`, `time`, `datetime`, (`pickerData` 将失效) | String | `-` |
   | minDate | 开始时间 | Number | `1949` |
   | maxDate | 结束时间 | Number | `当前年份往后 + 50` |
-  | onCancel | 取消的回调函数 | Function | `无` |
+  | onCancel | 取消的回调函数 | Function | `-` |
   | onConfirm | 确认的回调函数 | Function | `当前选中的数据(Array)及name值` |  
   | onItemChange | 列数据变更的回调函数 | Function | `变更前、后的数据` |
 ### 其他说明
