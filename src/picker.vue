@@ -21,8 +21,11 @@
               :data-column="index"
               :style="dynamicStyle(index)"
               @touchstart="onStart"
+              @mousedown="onStart"
               @touchmove="onMove"
+              @mousemove="onMove"
               @touchend="onEnd"
+              @mouseup="onEnd"
             >
               <li
                 class="item"
@@ -145,7 +148,14 @@
         this.pos[index][attr] = val;
       },
       getScreenY(e) {
-        return e.touches[0].screenY;
+        const type = e.type;
+        let screenY = 0;
+        if (type.indexOf('mouse') === 0) {
+          screenY = e.screenY;
+        } else {
+          screenY = e.touches[0].screenY;
+        }
+        return screenY;
       },
       getColumn(el) {
         return +el.dataset.column;
@@ -227,6 +237,7 @@
         this.itemHeight = itemHeight;
         this.setPosAttr(column, 'startY', this.getScreenY(e));
         this.setPosAttr(column, 'moveY', moveY);
+        this.setPosAttr(column, 'isMove', 1);
         this.setPosAttr(column, 'lastY', moveY);
         this.setPosAttr(column, 'scrollHeight', scrollHeight);
         this.setTransition(target, 'cubic-bezier(0, 0, 0.2, 1.15) 0s');
@@ -239,7 +250,8 @@
         const currentY = this.getScreenY(e);
         const currentColumn = this.pos[column];
         const newMoveY = currentColumn.lastY - currentColumn.startY + currentY;
-        this.setPosAttr(column, 'moveY', newMoveY);
+        const isMove = currentColumn.isMove;
+        if (isMove) this.setPosAttr(column, 'moveY', newMoveY);
       },
       onEnd(e) {
         e.preventDefault();
@@ -262,6 +274,7 @@
         const index = Math.abs(targetY / itemHeight);
         this.moveTo(target, targetY);
         this.onChange(column, index);
+        this.setPosAttr(column, 'isMove', 0);
       },
       // 组件初始化数据
       init() {
@@ -273,7 +286,8 @@
             moveY: 0,
             lastY: 0,
             index: 0,
-            scrollHeight: 0
+            scrollHeight: 0,
+            isMove: 0
           });
           index += 1;
         }
@@ -506,7 +520,8 @@
           startY: 0,
           moveY: 0,
           lastY: 0,
-          index: 0
+          index: 0,
+          isMove: 0
         });
       }
     }
