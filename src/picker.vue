@@ -54,7 +54,9 @@
       },
       pickerData: {
         type: Array,
-        default: []
+        default() {
+          return [];
+        }
       },
       date: String,
       minDate: [Number, String],
