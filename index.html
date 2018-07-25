@@ -12,6 +12,9 @@
     button {
       font-size: 1em;
     }
+    .demo {
+      margin: 20px;
+    }
     .data {
       padding: 10px;
       box-sizing: border-box;
@@ -70,6 +73,16 @@
           v-model="defaultData.datePicker"
         ></vue-ios-pickers>
       </li>
+      <li class="demo-title">日期(长期有效)</li>
+      <li class="demo-content">
+        <vue-ios-pickers
+          date="date"
+          align="left"
+          :is-long="true"
+          :on-confirm="confirmHandler"
+          v-model="defaultData.dateLong"
+        ></vue-ios-pickers>
+      </li>
       <li class="demo-title">日期(年.月)</li>
       <li class="demo-content">
         <vue-ios-pickers
@@ -100,7 +113,6 @@
       <li class="demo-content">
         <vue-ios-pickers
           date="datetime"
-          :cols="5"
           :on-confirm="confirmHandler"
           v-model="defaultData.datetimePicker"
         ></vue-ios-pickers>
@@ -118,7 +130,8 @@
         data: {
           defaultData: {
             picker: [ '四川', '泸州市', '02822' ],
-            datetimePicker: '2020.07.15 06:55'
+            datetimePicker: '2020.07.15 06:55',
+            dateLong: -1
           },
           pickerData: [
             [

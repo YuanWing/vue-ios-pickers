@@ -1,7 +1,7 @@
 <template>
   <div class="vue-ios-pickers">
     <div class="picker-value" @click="show = true" :style="{textAlign: align}">{{ pickerValue }}</div>
-    <transition name="fade" v-if="show">
+    <transition name="picker" v-if="show">
       <div>
         <div class="picker-mask" @click="closePicker" @mouseup="closePicker" key="mask" />
         <div class="picker-wrapper" key="wrapper">
@@ -20,6 +20,7 @@
               <ul
                 class="scroll"
                 :data-column="index"
+                :data-event="column.length > 0"
                 :style="dynamicStyle(index)"
                 @touchstart="onStart"
                 @mousedown="onStart"
@@ -45,6 +46,7 @@
 </template>
 
 <script>
+  const IS_LONG = '长期有效';
   export default {
     name: 'vue-ios-pickers',
     props: {
@@ -72,6 +74,10 @@
       align: {
         type: String,
         default: 'right'
+      },
+      isLong: {
+        type: Boolean,
+        default: false
       }
     },
     data() {
@@ -108,30 +114,42 @@
         const cols = data.length;
         const pos = this.pos;
         const selected = [];
-        let index = 0;
-        let names = [];
-        let ids = [];
-        while (index < cols) {
-          const { name, id } = data[index][pos[index].index];
+        let str = '';
+        let strIds = '';
+        if (this.isLong && this.pos[0].index === 0) {
           selected.push({
-            name,
-            id
+            name: IS_LONG,
+            id: -1
           });
-          ids.push(id);
-          names.push(name);
-          index += 1;
-        }
-        let str = names.join(',');
-        let strIds = ids.join(',');
-        if (this.date === 'date') {
-          strIds = ids.join('-');
-          str = str.replace(/,/g, '');
-        } else if (this.date === 'time') {
-          strIds = ids.join(':');
-          str = str.replace(',', '');
-        } else if (this.date === 'datetime') {
-          strIds = strIds.replace(/(\d+),(\d+),(\d+),(\d+),(\d+)/g, '$1-$2-$3 $4:$5');
-          str = str.replace(/(.+),(.+),(.+),(.+),(.+)/g, '$1$2$3 $4$5');
+          strIds = '-1';
+          str = IS_LONG;
+        } else {
+          let index = 0;
+          let names = [];
+          let ids = [];
+          while (index < cols) {
+            const { name, id } = data[index][pos[index].index];
+            selected.push({
+              name,
+              id
+            });
+            ids.push(id);
+            names.push(name);
+            index += 1;
+          }
+
+          str = names.join(',');
+          strIds = ids.join(',');
+          if (this.date === 'date') {
+            strIds = ids.join('-');
+            str = str.replace(/,/g, '');
+          } else if (this.date === 'time') {
+            strIds = ids.join(':');
+            str = str.replace(',', '');
+          } else if (this.date === 'datetime') {
+            strIds = strIds.replace(/(\d+),(\d+),(\d+),(\d+),(\d+)/g, '$1-$2-$3 $4:$5');
+            str = str.replace(/(.+),(.+),(.+),(.+),(.+)/g, '$1$2$3 $4$5');
+          }
         }
         if (typeof this.onConfirm === 'function') {
           this.onConfirm({
@@ -141,6 +159,7 @@
             name: this.name
           });
         }
+
         this.$emit('input', strIds);
         this.show = false;
         this.pickerValue = str;
@@ -203,6 +222,7 @@
       onChange(column, index) {
         const currentColumn = this.colsData[column];
         const oldItem = currentColumn[this.pos[column].index];
+        const colLen = this.colsData.length;
         if (index === this.pos[column].index) return;
         this.setPosAttr(column, 'index', index);
         const newItem = currentColumn[index];
@@ -220,7 +240,20 @@
         }
         // 这里要注意是级连的还是单独的
         if (this.date === 'date' || this.date === 'datetime') {
-          return this.setDateColumn(column, index);
+          const year = this.colsData[0][index];
+          if (this.isLong && colLen > 1 && column === 0 && year && year.id === -1) {
+            return this.isLongYear();
+          } else {
+            if (column === 0 && oldItem.id === -1) {
+              if (colLen > 1) this.setMonths(0);
+              if (colLen > 2) this.setDay(1);
+              if (colLen === 5) {
+                this.setHours(0);
+                this.setMinutes(0);
+              }
+            }
+            return this.setDateColumn(column, index);
+          }
         } else if (this.date === 'time') {
           return this.setTimeColumn(column, index);
         }
@@ -248,6 +281,7 @@
         e.preventDefault();
         const target = e.target;
         const children = target.children;
+        if (!children || !children.length) return;
         const itemHeight = children[0].getBoundingClientRect().height;
         const len = children.length;
         const scrollHeight = itemHeight * (len - 1);
@@ -269,6 +303,8 @@
       onMove(e) {
         e.preventDefault();
         const target = e.target;
+        const children = target.children;
+        if (!children || !children.length) return;
         const column = this.getColumn(target);
         const currentY = this.getScreenY(e);
         const currentColumn = this.pos[column];
@@ -279,6 +315,8 @@
       onEnd(e) {
         e.preventDefault();
         const target = e.target;
+        const children = target.children;
+        if (!children || !children.length) return;
         const column = this.getColumn(target);
         const currentPos = this.pos[column];
         const itemHeight = this.itemHeight;
@@ -314,8 +352,13 @@
           });
           index += 1;
         }
+
         if (this.date) {
-          this.initDate();
+          if (this.date.indexOf('date') !== -1 && this.isLong && +this.value === -1) {
+            this.initLongDate();
+          } else {
+            this.initDate();
+          }
           return;
         }
         if (this.pickerData.length > 1) {
@@ -380,6 +423,20 @@
           }
         }
       },
+      // 日期且默认值是长期有效时的初始化
+      initLongDate() {
+        const now = new Date();
+        this.pickerValue = IS_LONG;
+        this.setYear(now.getFullYear(), true);
+        if (this.cols > 1) this.colsData[1] = [];
+        if (this.cols > 2) this.colsData[2] = [];
+        if (this.date === 'datetime') {
+          this.resetColumn(3);
+          this.resetColumn(4);
+          this.colsData[3] = [];
+          this.colsData[4] = [];
+        }
+      },
       // 日期初始化
       initDate() {
         let now = new Date();
@@ -407,8 +464,10 @@
             });
           } else if (this.date === 'time') {
             const arr = strIds.split(':');
-            name = arr[0].length === 1 ? `0${arr[0]}时` : `${arr[0]}时`;
-            name += arr[1].length === 1 ? `0${arr[1]}分` : `${arr[1]}分`;
+            if (arr && arr.length === 2) {
+              name = arr[0].length === 1 ? `0${arr[0]}时` : `${arr[0]}时`;
+              name += arr[1].length === 1 ? `0${arr[1]}分` : `${arr[1]}分`;
+            }
           } else if (this.date === 'datetime') {
             name = name.replace(/(\d+)\-(\d+)\-(\d+) (\d+):(\d+)/g, (match, p1, p2, p3, p4, p5) => {
               let str = `${p1}年${p2}月${p3}日 `;
@@ -427,8 +486,8 @@
         if (this.date === 'time') {
           if (this.value) {
             const times = this.value.split(':');
-            this.setHours(times[0]);
-            this.setMinutes(times[1]);
+            this.setHours(this.toParseInt(times[0]));
+            this.setMinutes(this.toParseInt(times[1]));
           } else {
             this.setHours(nowHours);
             this.setMinutes(nowMinutes);
@@ -448,11 +507,30 @@
           }
         }
       },
-      setYear(nowYear) {
+      toParseInt(value) {
+        let num = parseInt(value, 10);
+        return Math.abs(num) || 0;
+      },
+      /**
+       * @param {number} nowYear - 现在的年份
+       * @param {boolean} type - true 说明是默认值为'长期有效'时进行的初始化
+       */
+      setYear(nowYear, type) {
         const startYear = parseInt(this.minDate) || 1949;
         const endYear = parseInt(this.maxDate) || (nowYear + 50);
         let year = startYear;
         const yearColumn = [];
+        let index = nowYear - startYear;
+        // 如果传了最小年份, 又传了默认值, 当默认值大于最小年份时, 直接设置索引为0
+        if (index < 0) index = 0;
+        // 判断是否增加 长期有效 (身份证有效期会使用到)
+        if (this.isLong) {
+          yearColumn.push({
+            name: IS_LONG,
+            id: -1
+          });
+          index += 1;
+        }
         while (year <= endYear) {
           yearColumn.push({
             name: `${year}年`,
@@ -460,9 +538,13 @@
           });
           year += 1;
         }
-        const index = nowYear - startYear;
-        this.pos[0].index = index;
-        this.pos[0].moveY = `-${2 * index}em`;
+        if (type) {
+          this.pos[0].index = 0;
+          this.pos[0].moveY = 0;
+        } else {
+          this.pos[0].index = index;
+          this.pos[0].moveY = `-${2 * index}em`;
+        }
         this.colsData[0] = yearColumn;
       },
       setMonths(nowMonths) {
@@ -530,6 +612,17 @@
           }
         }
       },
+      isLongYear() {
+        const colLen = this.colsData.length;
+        this.colsData[1] = [];
+        if (colLen > 2) {
+          this.colsData[2] = [];
+        }
+        if (colLen === 5) {
+          this.colsData[3] = [];
+          this.colsData[4] = [];
+        }
+      },
       /**
        * 判断是否为闰年
        * 能被 400 整除 或 能被 4 整除但不能被 100 整除
@@ -550,6 +643,9 @@
           });
           hours += 1;
         }
+        if (!this.pos[column]) {
+          this.resetColumn(3);
+        }
         this.pos[column].index = nowHours;
         this.pos[column].moveY = `-${2 * nowHours}em`;
         this.colsData[column] = hoursColum;
@@ -564,6 +660,9 @@
             id: minutes
           });
           minutes += 1;
+        }
+        if (!this.pos[column]) {
+          this.resetColumn(4);
         }
         this.pos[column].index = nowMinutes;
         this.pos[column].moveY = `-${2 * nowMinutes}em`;
@@ -630,6 +729,7 @@
     bottom: 0;
     z-index: 1000;
     overflow: hidden;
+    transition: all .3s ease;
   }
   .btn-box {
     display: flex;

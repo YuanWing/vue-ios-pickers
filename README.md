@@ -44,7 +44,7 @@ $ npm install vue-ios-pickers
   | onConfirm | 确认的回调函数 | Function | `当前选中的数据(Array)及name值` |  
   | onItemChange | 列数据变更的回调函数 | Function | `变更前、后的数据` |
 ### 其他说明
-1. 当使用 `date=datetime` 时 **必须** 传 `cols=5`;
+1. 当使用 `date=datetime` 时, `cols=5`;
 2. 使用 `v-model` 进行数据传输, 如果需要初始默认值, 刚把默认值赋值给 `v-model`;
 3. `date=datetime` 取值格式必须是 `年.月.日 时:分`
 4. 默认值格式: 如果存在 `date`, 则必须是 `String`, 否则可以是`String` 或 `Array`:
@@ -52,7 +52,8 @@ $ npm install vue-ios-pickers
     - `Array`: `['北京', '西城区', '西长椿街']`
     - `String`: `北京,西城区,西长椿街`
 5. 三级联动时, 后一列的数据取前一列的 `children` 属性值
-6. `pickerData`的数据格式:
+6. 新增 `date` 属性存在时, 年份支持 **长期有效(id='-1')**
+7. `pickerData`的数据格式:
     ```
     [
       [
