@@ -99,6 +99,9 @@ exports.default = {
   watch: {
     show: function show(val) {
       if (val) this.init();
+    },
+    value: function value(val) {
+      if (val && val !== 0) this.init();
     }
   },
   mounted: function mounted() {

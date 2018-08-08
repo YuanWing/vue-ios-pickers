@@ -93,6 +93,9 @@
     watch: {
       show(val) {
         if (val) this.init();
+      },
+      value(val) {
+        if (val && val !== 0) this.init();
       }
     },
     mounted() {
