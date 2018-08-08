@@ -101,7 +101,7 @@ exports.default = {
       if (val) this.init();
     },
     value: function value(val) {
-      if (val && val !== 0) this.init();
+      if (val || val === 0) this.init();
     }
   },
   mounted: function mounted() {

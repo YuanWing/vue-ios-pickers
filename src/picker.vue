@@ -95,7 +95,7 @@
         if (val) this.init();
       },
       value(val) {
-        if (val && val !== 0) this.init();
+        if (val || val === 0) this.init();
       }
     },
     mounted() {
