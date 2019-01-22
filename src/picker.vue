@@ -443,14 +443,15 @@
       // 日期初始化
       initDate() {
         let now = new Date();
-        if (this.value && this.date.indexOf('date') !== -1) {
-          now = new Date(this.value);
+        const strIds = this.value || '';
+        if (strIds && this.date.indexOf('date') !== -1) {
+          const reValue = strIds.replace(/(\.|-)/g, '/');
+          now = new Date(reValue);
         }
         if (now.toString().toLowerCase().indexOf('invalid') !== -1) {
           now = new Date();
-        } else if (this.value) {
-          const strIds = this.value;
-          let name = strIds.replace(/\./g, '-');
+        } else if (strIds) {
+          let name = strIds.replace(/(\.|\/)/g, '-');
           if (this.date === 'date') {
             name = name.replace(/(\d+)\-?(\d*)\-?(\d*)/g, (match, p1, p2, p3) => {
               let str = '';

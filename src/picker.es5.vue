@@ -468,14 +468,15 @@ exports.default = {
     // 日期初始化
     initDate: function initDate() {
       var now = new Date();
-      if (this.value && this.date.indexOf('date') !== -1) {
-        now = new Date(this.value);
+      var strIds = this.value || '';
+      if (strIds && this.date.indexOf('date') !== -1) {
+        var reValue = strIds.replace(/(\.|-)/g, '/');
+        now = new Date(reValue);
       }
       if (now.toString().toLowerCase().indexOf('invalid') !== -1) {
         now = new Date();
-      } else if (this.value) {
-        var strIds = this.value;
-        var name = strIds.replace(/\./g, '-');
+      } else if (strIds) {
+        var name = strIds.replace(/(\.|\/)/g, '-');
         if (this.date === 'date') {
           name = name.replace(/(\d+)\-?(\d*)\-?(\d*)/g, function (match, p1, p2, p3) {
             var str = '';
