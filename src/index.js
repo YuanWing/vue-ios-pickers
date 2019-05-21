@@ -1,7 +1,7 @@
 import Picker from './picker.vue';
 
-const VueIosPickers = {
-  install(Vue) {
+var VueIosPickers = {
+  install: function(Vue) {
     Vue.component(Picker.name, Picker);
   }
 };
