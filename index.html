@@ -180,10 +180,10 @@
           resultData: ''
         },
         methods: {
-          confirmHandler(result) {
+          confirmHandler: function(result) {
             this.resultData = JSON.stringify(result, '', 2);
           },
-          changeHandler(data) {
+          changeHandler: function(data) {
             this.resultData = JSON.stringify(data, '', 2);
           }
         }
