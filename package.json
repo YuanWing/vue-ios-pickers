@@ -1,6 +1,6 @@
 {
   "name": "vue-ios-pickers",
-  "version": "1.4.8",
+  "version": "1.4.9",
   "description": "基于vue，iOS风格的picker组件，支持三级联动，日期(年.月.日)，时间(时:分)，日期+时间，年，年+月",
   "main": "./src/index.es5.js",
   "repository": "https://github.com/YuanWing/vue-ios-pickers",

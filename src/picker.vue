@@ -71,6 +71,10 @@
       onConfirm: Function,
       onItemChange: Function,
       name: String,
+      placeholder: {
+        type: String,
+        default: '请选择'
+      },
       align: {
         type: String,
         default: 'right'
@@ -82,7 +86,7 @@
     },
     data() {
       return {
-        pickerValue: '请选择',
+        pickerValue: '',
         show: false,
         itemHeight: 0,
         // 实际页面展示的数据
@@ -97,6 +101,9 @@
       value(val) {
         if (val || val === 0) this.init();
       }
+    },
+    created() {
+      this.pickerValue = this.placeholder;
     },
     mounted() {
       this.init();
@@ -263,7 +270,7 @@
         if (column >= 2 || this.pickerData.length > 1) return;
         const { id, children } = currentColumn[index];
         if (id === -1) return;
-        const noData = [{ name: '请选择', id: -1 }];
+        const noData = [{ name: this.placeholder, id: -1 }];
         if (this.cols === 3) this.resetColumn(2);
         if (column === 0) {
           if (this.cols > 1) {
