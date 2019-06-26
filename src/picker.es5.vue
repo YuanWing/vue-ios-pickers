@@ -738,9 +738,10 @@ exports.default = {
     padding: 0.5em 1em 0.5em 0;
     height: 1.2em;
     position: relative;
-    text-align: right;
+    box-sizing: content-box;
     input {
       box-sizing: border-box;
+      text-align: right;
       pointer-events: none;
       position: absolute;
       left: 0;
@@ -751,6 +752,7 @@ exports.default = {
       padding: 0 1.2em 0 0;
       border: 0 none;
       font: inherit;
+      background: transparent;
     }
     &:after {
       content: '';
