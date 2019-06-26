@@ -1,6 +1,8 @@
 <template>
   <div class="vue-ios-pickers">
-    <div class="picker-value" @click="show = true" :style="{textAlign: align}">{{ pickerValue }}</div>
+    <div class="picker-value" @click="show = true">
+      <input :placeholder="placeholder" v-model="pickerValue" :style="{textAlign: align}" />
+    </div>
     <transition name="picker" v-if="show">
       <div>
         <div class="picker-mask" @click="closePicker" @mouseup="closePicker" key="mask" />
@@ -108,9 +110,9 @@ exports.default = {
       if (val || val === 0) this.init();
     }
   },
-  created: function created() {
-    this.pickerValue = this.placeholder;
-  },
+  // created: function created() {
+  //   this.pickerValue = this.placeholder;
+  // },
   mounted: function mounted() {
     this.init();
   },
@@ -734,8 +736,22 @@ exports.default = {
   }
   .picker-value {
     padding: 0.5em 1em 0.5em 0;
+    height: 1.2em;
     position: relative;
     text-align: right;
+    input {
+      box-sizing: border-box;
+      pointer-events: none;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0 1.2em 0 0;
+      border: 0 none;
+      font: inherit;
+    }
     &:after {
       content: '';
       position: absolute;
